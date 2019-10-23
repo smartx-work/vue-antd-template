@@ -24,6 +24,7 @@ module.exports = {
                 }, */
             },
         },
+        // after: require('./mock/index'),
     },
     configureWebpack: (function () {
         if (process.env.NODE_ENV === 'production') {
@@ -46,7 +47,9 @@ module.exports = {
         const svgRule = config.module.rule('svg')
         svgRule.uses.clear()
         svgRule
-            .include.add(path.join(__dirname, 'src/styles/svgicon')).end()
+            .include.add(path.join(__dirname, 'src/svgicon/imgs')).end()
+            .include.add(path.join(__dirname, 'src/components')).end()
+            .include.add(path.join(__dirname, 'src/views')).end()
             .use('svg-sprite-loader')
             .loader('svg-sprite-loader')
             .options({ symbolId: 'icon-[name]' })

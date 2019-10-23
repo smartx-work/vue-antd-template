@@ -1,5 +1,12 @@
 {
     "vetur.format.defaultFormatter.html": "none",
     "vetur.format.defaultFormatter.js": "none",
-    "vetur.format.options.tabSize": 2
+    "vetur.format.options.tabSize": 2,
+    "editor.formatOnSave": true,
+    "css.validate": false,
+    "less.validate": false,
+    "stylelint.enable": true,
+    "stylelint.configOverrides": {
+        "ignoreFiles": "!src/**/*.{less,css}" // ignores all files except ".less" files starting from "src" dir (change glob rule to fit your needs)
+    },
 }

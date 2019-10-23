@@ -4,7 +4,7 @@
     <div class="page-login-box">
       <div class="login-form-outer">
         <h4 class="title">
-          <svg-icon type="share-goods" alt="logo" />
+          <svg-icon name="share-goods" alt="logo" />
           <div>秀购商家中心</div>
         </h4>
 
@@ -16,8 +16,9 @@
         <a-form :form="form" class="login-form" @submit.prevent="handleSubmit">
           <a-form-item v-show="loginType === 'ACCOUNT'">
             <a-input
-              v-decorator="formDecorators.loginName"
-              :placeholder="formDecorators.loginName[1].rules[0].message"
+              v-decorator="formDecorators.account"
+              :placeholder="formDecorators.account[1].rules[0].message"
+              @change="$input.trim"
             >
               <a-icon slot="prefix" type="user" style="color: rgba(0, 0, 0, 0.25);" />
             </a-input>
@@ -37,6 +38,7 @@
             <a-input
               v-decorator="formDecorators.mobile"
               :placeholder="formDecorators.mobile[1].rules[0].message"
+              @change="$input.trim"
             >
               <a-icon slot="prefix" type="mobile" style="color: rgba(0, 0, 0, 0.25);" />
             </a-input>
@@ -100,10 +102,12 @@ export default {
 
             form: this.$form.createForm(this),
             formDecorators: {
-                loginName: [ 'loginName', {
+                account: [ 'account', {
+                    initialValue: 'xxx',
                     rules: [ { required: true, message: '请输入用户名' } ],
                 } ],
                 password: [ 'password', {
+                    initialValue: 'xxx',
                     rules: [ { required: true, message: '请输入密码' } ],
                 } ],
                 mobile: [ 'mobile', {
@@ -118,6 +122,7 @@ export default {
             countdownTimer: null,
         }
     },
+
 
     methods: {
         getCode () { // 错误处理，不抛出的，使用统一状态码处理，抛出的，res, err
@@ -137,39 +142,21 @@ export default {
             })
         },
         handleSubmit () {
-            if (this.loginType === 'ACCOUNT') {
-                this.form.validateFields([ 'loginName', 'password' ], (err, values) => {
+            const service = this.loginType ? { name: 'loginByAccount', params: [ 'account', 'password' ] } : { name: 'loginByMobile', params: [ 'mobile', 'verificationCode' ] }
+            this.form.validateFields(service.params, (err, params) => {
+                if (err) {
+                    return
+                }
+                this.loginLoading = true
+                this.$services[service.name](params, (res, err) => {
                     if (!err) {
-                        this.loginLoading = true
-                        this.$api.accountLogin({
-                            accountName: values.loginName.trim(),
-                            password: values.password,
-                        }, res => {
-                            this.loginComplete(res)
-                        })
+                        this.$store.commit('LOGIN', res)
+                        this.$router.push({ name: 'merchant-selector' })
                     }
+                    this.loginLoading = false
                 })
-            } else {
-                this.form.validateFields([ 'mobile', 'verificationCode' ], (err, values) => {
-                    if (!err) {
-                        this.loginLoading = true
-                        this.$api.mobileLogin({
-                            mobile: values.mobile.trim(),
-                            verificationCode: values.verificationCode,
-                        }, (err, res) => {
-                            this.loginComplete(err, res)
-                        })
-                    }
-                })
-            }
+            })
         },
-    },
-    loginComplete (err, res) {
-        if (!err) {
-            // this.$store.commit('LOGIN', res)
-            // this.$router.push({ path: this.$router.redirect || '/home/index' })
-        }
-        this.loginLoading = false
     },
 }
 </script>

@@ -6,8 +6,6 @@ export default function (option) {
     const { mode, base, routes, state } = option
     const { nameRoutes, allRoutes, loginIgnoreRoutes, authIgnoreRoutes } = routesFormat(routes)
 
-    console.info({ state, routes, nameRoutes, allRoutes, loginIgnoreRoutes, authIgnoreRoutes })
-
     const router = new Router({
         mode,
         base,
@@ -19,6 +17,8 @@ export default function (option) {
     router.beforeEach((to, from, next) => {
         const { path } = to
         const { isLogin } = state
+
+        console.info(option.state)
 
         // 处理登录白名单
         if (loginIgnoreRoutes.some(route => route.pathRegexp.test(path))) {

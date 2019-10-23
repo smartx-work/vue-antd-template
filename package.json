@@ -4,10 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build",
+    "lintcss": "stylelint src/**/*.{less,css} --fix"
   },
   "dependencies": {
     "ant-design-vue": "^1.4.0",
+    "axios": "^0.19.0",
     "core-js": "^2.6.5",
     "js-cookie": "^2.2.1",
     "path-to-regexp": "^3.1.0",
@@ -17,12 +19,19 @@
     "vuex-persistedstate": "^2.5.4"
   },
   "devDependencies": {
+    "@babel/register": "^7.6.2",
     "@smartx/eslint-config-tentative": "^1.2.0",
     "@vue/cli-plugin-babel": "^3.12.0",
     "@vue/cli-service": "^3.12.0",
     "babel-eslint": "^10.0.3",
+    "body-parser": "^1.19.0",
     "less": "^3.0.4",
     "less-loader": "^5.0.0",
+    "stylelint": "^11.1.1",
+    "stylelint-config-standard": "^19.0.0",
+    "stylelint-order": "^3.1.1",
+    "stylelint-prettier": "^1.1.1",
+    "svg-sprite-loader": "^4.1.6",
     "vue-template-compiler": "^2.6.10"
   },
   "postcss": {

@@ -1,29 +1,100 @@
-function services (id, params, callback) { // 服务id，服务参数，服务完成回调
+// import adapter from '@smartx/adapter'
+import { message, Modal } from 'ant-design-vue'
+
+import store from '@/store'
+import services from '@/packages/services'
+import configs from './configs'
 
 
-}
+export default services({
+    configs,
+    apiSetting: {
+        baseURL: '', // 基础路径
+        init (config) {
+            // 初始化适配器
+            const { reqa, resa } = config
+            if (typeof reqa === 'object') {
+                config.reqa = (params) => params // adapter(reqa).input
+            }
+            if (typeof resa === 'object') {
+                config.resa = (data) => data
+                // config.resa = adapter(resa).input
+            }
+        },
+        headers: {
+            getter ({ headers }) {
+                // 存储商家标识以备后续使用
+                if (headers['sg-merchant-code']) {
+                    store.commit('SET_SG_MERCHANT_CODE', headers['sg-merchant-code'])
+                }
+            },
+            setter ({ headers }) {
+                // 添加登录验签
+                headers.token = store.getters.token
 
+                // 添加商家标识
+                headers['sg-merchant-code'] = store.getters.sgMerchantCode
 
-export default services
+                return headers
+            },
+        },
+        params: {
+            setter ({ params, config: { reqa } }) {
+                return reqa ? reqa(params) : params
+            },
+        },
+        response: {
+            getter ({ res, config: { resa } }) {
+                const { code, data } = res
+                let error = null
 
+                if (code === 0 || code === 10000) {
+                    // 分页数据适配
+                    if (data && typeof data === 'object' && data.currentPage) {
+                        res.data = {
+                            ...data,
+                            data: data.data || data.list, // 分页数据
+                            page: data.currentPage || 1, // 分页页码
+                            total: data.totalPageNum || data.totalNum || 0, // 分页数据总条数
+                        }
+                    }
 
-// e.g
+                    // 调用数据适配器
+                    if (resa) {
+                        res.data = resa(res.data)
+                    }
+                } else {
+                    error = { code, message: res.message || res.msg }
+                }
 
+                return { error, res }
+            },
+        },
+        onError ({ error }) {
+            if (error.code === 10101) { // 未登录
+                Modal.confirm({
+                    title: '确定重新登录',
+                    content: '登录信息已失效，点击取消继续留在该页面，或者重新登录',
+                    okText: '重新登录',
+                    width: 500,
+                    centered: true,
+                    onOk () {
+                        store.commit('LOGOUT')
+                        store.commit('MERCHANT_LOGOUT')
+                        window.location.href = '/login'
+                    },
+                    onCancel () {},
+                })
+            } else {
+                message.error(error.message, 0.6)
+                if (error.stack) {
+                    console.error(error.stack)
+                }
+            }
+        },
+    },
+    workSetting: {
 
-config = [ '用户登录', 'login', {
-    type: 'HTTP.POST',
-    throwError: true,
-    reqAdapter: {
 
     },
-    resAdapter: {
-
-    },
-    mock () {
-
-    },
-} ]
-
-services('login', { user: 'admin', pwd: '123456' }, () => {
-    alert('登录成功！')
 })

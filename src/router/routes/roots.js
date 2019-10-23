@@ -35,4 +35,21 @@ export default [
             },
         ],
     },
+    {
+        menu: true,
+        path: '',
+        component: BasicLayout,
+        meta: { label: '商家入口', icon: 'home' },
+        redirect: '/merchant-selector',
+        children: [
+            {
+                menu: true,
+                name: 'merchant-selector',
+                path: 'merchant-selector',
+                authIgnore: true,
+                meta: { label: '商家列表', icon: 'home' },
+                component: () => import(/* webpackChunkName: "index" */ '@/views/merchant-selector'),
+            },
+        ],
+    },
 ]
