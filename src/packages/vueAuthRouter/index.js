@@ -18,8 +18,6 @@ export default function (option) {
         const { path } = to
         const { isLogin } = state
 
-        console.info(option.state)
-
         // 处理登录白名单
         if (loginIgnoreRoutes.some(route => route.pathRegexp.test(path))) {
             if (nameRoutes.login.pathRegexp.test(path) && isLogin) { // 已登录的情况下，登录页直接跳转到首页

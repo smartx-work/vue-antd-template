@@ -97,6 +97,9 @@ class APIService {
         }
 
         if (this.CUSTOM_CONFIG.mockLocal) {
+            const mockData = this.CUSTOM_CONFIG.mockLocal(this.axiosConfig(params))
+            // eslint-disable-next-line no-console
+            console.info({ mockData })
             return onResponse(this.CUSTOM_CONFIG.mockLocal(this.axiosConfig(params)))
         }
 
@@ -202,9 +205,6 @@ export default function (option) {
             services[serviceId] = createService(serviceOptions[serviceId], { apiSetting, workSetting })
         }
     }
-
-
-    console.info({ services })
 
     return services
 }

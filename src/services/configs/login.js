@@ -1,5 +1,4 @@
 
-
 export const loginByAccount = [ 'authorizations/accounts/:account2', { // 账号登录
     method: 'post',
     reqa: {
@@ -17,13 +16,34 @@ export const loginByAccount = [ 'authorizations/accounts/:account2', { // 账号
                 code: 0,
                 message: '登录成功',
                 data: {
-                    nick: '张三',
+                    name: '树',
                     avatar: '',
                     token: String(Date.now()),
                 },
             },
         }
     },
+    mock: `
+        @data{
+            @header{
+                @xxx 111
+            }
+            @data{
+                @code 0
+                @message '登录成功'
+                @data{
+                    @nick #cname
+                    @avatar #random([1,2,3,4])
+                    @token #step(1,8)
+                }
+                @list(20)[
+                    @name #cname
+                    @img #jpg(600,600)
+                    @mobile #mobile
+                ]
+            }
+        }
+    `,
     delay: 10,
     error: true,
 } ]
