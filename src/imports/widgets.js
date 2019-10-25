@@ -1,23 +1,24 @@
 import Vue from 'vue'
-
+import Card from '@/components/widgets/card'
 import DataFilter from '@/components/widgets/data-filter'
+import DataView from '@/components/widgets/data-view'
 /*
-import Card from '@/components/mr/card'
-import Table from '@/components/mr/table'
-import OperateBar from '@/components/mr/operate-bar'
-import DataFilter from '@/components/mr/data-filter'
-import DataView from '@/components/mr/data-view'
-import Upload from '@/components/mr/upload'
-import DataTabs from '@/components/mr/data-tabs'
-import Form from '@/components/mr/form'
-import AreaPicker from '@/components/mr/area-picker'
-import Dialog from '@/components/mr/dialog' */
+
+import Table from '@/components/widgets/table'
+import OperateBar from '@/components/widgets/operate-bar'
+import DataFilter from '@/components/widgets/data-filter'
+import DataView from '@/components/widgets/data-view'
+import Upload from '@/components/widgets/upload'
+import DataTabs from '@/components/widgets/data-tabs'
+import Form from '@/components/widgets/form'
+import AreaPicker from '@/components/widgets/area-picker'
+import Dialog from '@/components/widgets/dialog' */
 
 const components = {
-    DataFilter,
+    Card, DataFilter, DataView,
     // Card, Table, OperateBar, DataFilter, DataView, Upload, DataTabs, Form, AreaPicker, Dialog,
 }
 
 for (const name in components) {
-    Vue.component(`widget${name.replace(/([A-Z])/g, (match, letter) => `-${letter.toLowerCase()}`)}`, components[name])
+    Vue.component(`wgt${name.replace(/([A-Z])/g, (match, letter) => `-${letter.toLowerCase()}`)}`, components[name])
 }

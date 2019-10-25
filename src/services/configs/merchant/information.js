@@ -1,4 +1,4 @@
-export const getMerchantList = [ 'merchants', {
+export const getMerchantList = [ 'merchants', { // 获取商家列表
     method: 'get',
 
     resa: {
@@ -31,6 +31,29 @@ export const getMerchantList = [ 'merchants', {
                     ],
                 },
             },
+        }
+    },
+} ]
+
+
+export const submitCertification = [ 'certifications', { // 提交实名认证
+    method: 'post',
+    error: true,
+    mockLocal () {
+        return {
+            data: {
+                code: 0,
+            },
+        }
+    },
+} ]
+
+export const getCertificationDigital = [ 'certification/digital', { // 获取实名认证数字证书
+    method: 'get',
+    error: true,
+    mockLocal () {
+        return {
+            data: { code: 0 },
         }
     },
 } ]

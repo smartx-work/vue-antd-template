@@ -33,7 +33,9 @@ export default services({
                 headers.token = store.getters.token
 
                 // 添加商家标识
-                headers['sg-merchant-code'] = store.getters.sgMerchantCode
+                if (store.getters.merchantToken) {
+                    headers['sg-merchant-code'] = store.getters.merchantToken
+                }
 
                 return headers
             },
@@ -44,7 +46,13 @@ export default services({
             },
         },
         response: {
-            getter ({ res, config: { resa } }) {
+            getter ({ res, config }) {
+                const { resa, responseType } = config
+                if (responseType === 'arrayBuffer') { // 二进制，则不处理
+                    resa(res, config)
+                    return {}
+                }
+
                 const { code, data } = res
                 let error = null
 
@@ -86,7 +94,7 @@ export default services({
                     onCancel () {},
                 })
             } else {
-                message.error(error.message, 0.6)
+                message.error(error.message || '未知错误', 0.6)
                 if (error.stack) {
                     console.error(error.stack)
                 }

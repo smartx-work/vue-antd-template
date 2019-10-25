@@ -3,4 +3,5 @@ import merchant from './merchant'
 
 export default [
     ...roots,
+    ...merchant,
 ]

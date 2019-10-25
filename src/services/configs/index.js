@@ -1,5 +1,5 @@
 import * as login from './login'
-import * as merchant from './merchant'
+import * as merchant from './merchant/'
 
 
 export default {

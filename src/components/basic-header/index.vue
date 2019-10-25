@@ -5,7 +5,7 @@
         <div class="basic-header-inner">
           <a-icon class="trigger" :type="collapsed ? 'menu-unfold' : 'menu-fold'" @click="$emit('toggle')" />
           <basic-breadcrumb />
-          <router-link class="help-link" target="_blank" :to="{path:'/help-document'}">
+          <router-link class="help-link" target="_blank" :to="{ path: '/help-document' }">
             帮助文档
           </router-link>
           <user-menu />
@@ -23,7 +23,6 @@ export default {
     props: {
         collapsed: {
             type: Boolean,
-            default: false,
         },
     },
     data () {

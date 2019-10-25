@@ -4,13 +4,13 @@
     <div class="page-login-box">
       <div class="login-form-outer">
         <h4 class="title">
-          <svg-icon name="share-goods" alt="logo" />
+          <svg-icon type="share-goods" alt="logo" />
           <div>秀购商家中心</div>
         </h4>
 
         <div class="login-type">
-          <a :class="{active: loginType === 'ACCOUNT'}" @click="loginType = 'ACCOUNT'">账号登录</a>
-          <a :class="{active: loginType === 'PHONE'}" @click="loginType = 'PHONE'">手机号登录</a>
+          <a :class="{ active: loginType === 'ACCOUNT' }" @click="loginType = 'ACCOUNT'">账号登录</a>
+          <a :class="{ active: loginType === 'PHONE' }" @click="loginType = 'PHONE'">手机号登录</a>
         </div>
 
         <a-form :form="form" class="login-form" @submit.prevent="handleSubmit">

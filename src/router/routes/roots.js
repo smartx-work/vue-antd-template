@@ -8,15 +8,17 @@ export default [
         component: () => import(/* webpackChunkName: "index" */ '@/views/login'),
     },
     {
+        name: 'index',
         path: '',
         component: BasicLayout,
-        redirect: '/home',
+        redirect: '/dashboard',
         children: [
             {
-                name: 'home',
-                path: 'home',
+                name: 'dashboard',
+                path: 'dashboard',
                 authIgnore: true,
-                meta: { label: '首页' },
+                menu: true,
+                meta: { icon: 'dashboard', label: '概览' },
                 component: () => import(/* webpackChunkName: "index" */ '@/views/roots/home'),
             },
             {
@@ -35,21 +37,5 @@ export default [
             },
         ],
     },
-    {
-        menu: true,
-        path: '',
-        component: BasicLayout,
-        meta: { label: '商家入口', icon: 'home' },
-        redirect: '/merchant-selector',
-        children: [
-            {
-                menu: true,
-                name: 'merchant-selector',
-                path: 'merchant-selector',
-                authIgnore: true,
-                meta: { label: '商家列表', icon: 'home' },
-                component: () => import(/* webpackChunkName: "index" */ '@/views/merchant-selector'),
-            },
-        ],
-    },
+
 ]

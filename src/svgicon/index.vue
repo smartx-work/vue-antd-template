@@ -10,7 +10,7 @@
 export default {
     name: 'SvgIcon',
     props: {
-        name: { // 图标类型，等于图标文件名称
+        type: { // 图标类型，等于图标文件名称
             type: String,
             required: true,
         },
@@ -21,7 +21,7 @@ export default {
     },
     computed: {
         iconName () {
-            return `#icon-${this.name}`
+            return `#icon-${this.type}`
         },
     },
     methods: {

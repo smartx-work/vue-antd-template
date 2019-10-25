@@ -15,6 +15,7 @@ class APIService {
             transformRequest: config.transformRequest,
             transformResponse: config.transformResponse,
             headers: config.headers,
+            responseType: config.responseType,
         }
 
         this.CUSTOM_CONFIG = {
@@ -45,7 +46,6 @@ class APIService {
             let error = null
             let res = responseObject.data
 
-
             const { headers, response } = this.SETTING
 
             if (headers && headers.getter) {
@@ -54,7 +54,10 @@ class APIService {
 
 
             if (response && response.getter) {
-                ({ res, error } = response.getter({ res, config: { resa: this.CUSTOM_CONFIG.resa } }))
+                ({ res, error } = response.getter({ res, config: { ...this.CUSTOM_CONFIG, ...this.AXIOS_CONFIG, params } }))
+                if (typeof res !== 'object') {
+                    res = {}
+                }
             }
 
             // 响应状态错误
@@ -84,7 +87,7 @@ class APIService {
                 return
             }
 
-            resolve(res.data)
+            resolve(res && res.data)
         }
 
         // 延迟处理
@@ -97,10 +100,11 @@ class APIService {
         }
 
         if (this.CUSTOM_CONFIG.mockLocal) {
-            const mockData = this.CUSTOM_CONFIG.mockLocal(this.axiosConfig(params))
+            const sendData = this.axiosConfig(params)
+            const mockData = this.CUSTOM_CONFIG.mockLocal(sendData)
             // eslint-disable-next-line no-console
-            console.info({ mockData })
-            return onResponse(this.CUSTOM_CONFIG.mockLocal(this.axiosConfig(params)))
+            console.info({ sendData, mockData })
+            return onResponse(mockData)
         }
 
         axios(this.axiosConfig(params)).then(onResponse).catch((err) => {

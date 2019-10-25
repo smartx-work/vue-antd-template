@@ -1,6 +1,6 @@
 <template>
   <div class="view-merchant-selector">
-    <widget-data-filter :option="dataFilter" />
+    <wgt-data-filter :option="dataFilter" />
 
     <a-list
       :grid="{ gutter: 16, column: 4 }"
@@ -51,21 +51,24 @@ export default {
                 pageSize: 20,
             },
             dataFilter: {
+                fields: {
+                    merchantCode: { label: '商家ID' },
+                    merchantName: { label: '商家名称' },
+                },
                 submit: () => {
                     this.getList()
                 },
             },
         }
     },
+
     created () {
         this.getList()
     },
-    mounted () {
 
-    },
     methods: {
         getList (params) {
-            this.$services.getMerchantList({ ...this.pagination, ...this.dataFilter, ...params }, ({ page, total, data }, err) => {
+            this.$services.getMerchantList({ ...this.pagination, ...this.dataFilter.params, ...params }, ({ page, total, data }, err) => {
                 if (total === 0) {
                     return this.$message.error('此账号已停用')
                 }

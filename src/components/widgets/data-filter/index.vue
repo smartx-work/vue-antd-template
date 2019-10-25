@@ -25,7 +25,6 @@ export default {
             callbacks: null,
         }
     },
-
     created () {
         let isReady = false
         const callbacks = this.callbacks = [ () => isReady = true ]
@@ -43,6 +42,7 @@ export default {
 
         this.formatFields()
     },
+
 
     mounted () {
         this.updateParams()
@@ -173,7 +173,7 @@ export default {
     },
     render () {
         return (
-            <div class="widget-data-filter">
+            <div class="wgt-data-filter">
                 <a-form layout="inline" form={this.form} onSubmit={
                     (e) => {
                         e.preventDefault()
@@ -226,7 +226,7 @@ export default {
 }
 </script>
 <style lang="less">
-.widget-data-filter {
+.wgt-data-filter {
   margin: 20px;
 
   /* min-width: 1140px; */
