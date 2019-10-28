@@ -24,17 +24,39 @@ export const getMerchantList = [ 'merchants', { // 获取商家列表
                 code: 0,
                 data: {
                     page: params.page,
-                    total: 100,
+                    total: 2,
                     data: [
-                        { name: '张三', code: 'MC0001', statusLabel: '正常', typeLabel: '自营商家' },
-                        { name: '李四', code: 'MC0002', statusLabel: '停用', typeLabel: '联营商家' },
+                        { name: '老张店铺', code: 'MC0001', statusLabel: '正常', typeLabel: '自营商家' },
+                        { name: '李四炒饭', code: 'MC0002', statusLabel: '停用', typeLabel: '联营商家' },
                     ],
                 },
             },
         }
     },
+    delay: 50,
 } ]
 
+export const selectMerchant = [ 'merchant/tokens/:code', { // 选择商家，会返回商家token
+    method: 'get',
+    mockLocal () {
+        return {
+            headers: { 'sg-merchant-code': 'merchantToken' },
+            data: {
+                code: 0,
+                data: {
+                    authoritys: [
+                        '/merchant/information',
+                        '/merchant/electronic-contract/detail',
+                        '/goods/list',
+                        '/business/order',
+                        '/business/order',
+                        '/finance/bill-list',
+                    ].join(),
+                },
+            },
+        }
+    },
+} ]
 
 export const submitCertification = [ 'certifications', { // 提交实名认证
     method: 'post',

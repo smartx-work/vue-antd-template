@@ -23,6 +23,12 @@ export default services({
         },
         headers: {
             getter ({ headers }) {
+                // 储存登录标识
+                const { token } = headers
+                if (token && token !== store.getters.token) {
+                    store.commit('SET_TOKEN', token)
+                }
+
                 // 存储商家标识以备后续使用
                 if (headers['sg-merchant-code']) {
                     store.commit('SET_SG_MERCHANT_CODE', headers['sg-merchant-code'])

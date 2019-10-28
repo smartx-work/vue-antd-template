@@ -151,7 +151,7 @@ export default {
                 this.$services[service.name](params, (res, err) => {
                     if (!err) {
                         this.$store.commit('LOGIN', res)
-                        this.$router.push({ name: 'merchant-selector' })
+                        this.$router.push('/merchant/selector')
                     }
                     this.loginLoading = false
                 })

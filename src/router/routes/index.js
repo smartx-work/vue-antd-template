@@ -1,7 +1,7 @@
-import roots from './roots'
+import others from './others'
 import merchant from './merchant'
 
 export default [
-    ...roots,
+    ...others,
     ...merchant,
 ]

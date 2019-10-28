@@ -1,6 +1,6 @@
 <template>
   <div class="view-electronic-contract-detail">
-    <mr-card>
+    <wgt-card>
       <a-row>
         <a-col :span="12">
           <div class="info-p">
@@ -27,19 +27,19 @@
           </div>
         </a-col>
       </a-row>
-    </mr-card>
+    </wgt-card>
 
-    <mr-card v-if="detail.signEnabled">
+    <wgt-card v-if="detail.signEnabled">
       <a-button
-        :disabled="!HAS_PERMISSION('merchant.electronic-contract.detail.sign.auth')"
+        :disabled="!$auth.has('merchant.electronic-contract.detail.sign.auth')"
         type="primary"
         @click="openSignDialog"
       >
         签约
       </a-button>
-    </mr-card>
+    </wgt-card>
 
-    <mr-card>
+    <wgt-card>
       <a-row>
         <a-col :span="12">
           <h3 class="info-title">
@@ -97,7 +97,7 @@
           <div class="info-p">
             <span class="fileName">{{ detail.contractName }}</span>
             <a-button
-              :disabled="!HAS_PERMISSION('merchant.electronic-contract.detail.download.auth')"
+              :disabled="!$auth.has('merchant.electronic-contract.detail.download.auth')"
               type="primary"
               @click="downloadFile(detail.contractId)"
             >
@@ -115,14 +115,14 @@
           <div class="info-p">
             <span class="fileName">{{ detail.masterContractName }}</span>
             <a-button
-              :disabled="!HAS_PERMISSION('merchant.electronic-contract.detail.download.auth')"
+              :disabled="!$auth.has('merchant.electronic-contract.detail.download.auth')"
               type="primary"
               @click="downloadFile(detail.masterContractNo)"
             >
               下载
             </a-button>
             <a-button
-              :disabled="!HAS_PERMISSION('merchant.electronic-contract.detail')"
+              :disabled="!$auth.has('merchant.electronic-contract.detail')"
               type="primary"
               @click="viewDetail(detail.masterContractNo)"
             >
@@ -131,9 +131,9 @@
           </div>
         </a-col>
       </a-row>
-    </mr-card>
+    </wgt-card>
 
-    <mr-dialog :option="zqDialog" />
+    <wgt-dialog :option="zqDialog" />
   </div>
 </template>
 <script>
@@ -142,6 +142,7 @@ export default {
     components: { pdfViewer },
     data () {
         return {
+            xx: 1,
             contractId: this.$route.query.contractId, // 合同编号
             detail: {}, // 合同详情
 
@@ -234,16 +235,14 @@ export default {
     created () {
         this.getDetailInfo()
     },
+
     methods: {
 
         // 获取合同详情
         getDetailInfo () {
-            this.$api
-                .getElectronicContractDetail({ contractId: this.contractId }, (res) => {
-                    if (!res.err) {
-                        this.detail = res
-                    }
-                })
+            this.$services.getElectronicContractDetail({ contractId: this.contractId }, (res) => {
+                this.detail = res
+            })
         },
 
         // 打开签约弹窗，前置校验包含实名认证和数字证书

@@ -31,14 +31,14 @@ export default function (option) {
             return next(nameRoutes.login)
         }
 
-        // 处理权限白名单
-        if (authIgnoreRoutes.some(route => route.pathRegexp.test(path))) {
-            return next()
-        }
-
         // 初始化权限配置
         if (!authoritys) {
             authoritys = typeof state.merchantAuthoritys === 'string' ? state.authoritys.split(',').reduce((results, item) => (results[item] = true, results), {}) : state.merchantAuthoritys
+        }
+
+        // 处理权限白名单
+        if (authIgnoreRoutes.some(route => route.pathRegexp.test(path))) {
+            return next()
         }
 
         // 有权限

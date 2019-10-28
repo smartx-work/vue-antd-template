@@ -47,6 +47,10 @@ export default {
   .basic-content {
     overflow-y: scroll;
     height: 100vh;
+
+    &.ant-layout {
+      background-color: rgba(248, 248, 251, 1);
+    }
   }
 }
 </style>

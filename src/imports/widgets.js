@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Card from '@/components/widgets/card'
 import DataFilter from '@/components/widgets/data-filter'
 import DataView from '@/components/widgets/data-view'
+import Dialog from '@/components/widgets/dialog'
 /*
 
 import Table from '@/components/widgets/table'
@@ -15,7 +16,7 @@ import AreaPicker from '@/components/widgets/area-picker'
 import Dialog from '@/components/widgets/dialog' */
 
 const components = {
-    Card, DataFilter, DataView,
+    Card, DataFilter, DataView, Dialog,
     // Card, Table, OperateBar, DataFilter, DataView, Upload, DataTabs, Form, AreaPicker, Dialog,
 }
 

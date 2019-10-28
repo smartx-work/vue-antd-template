@@ -32,6 +32,13 @@ class APIService {
 
     execute (params, callback) {
         params = params || {} // params ==  null 的时候，设置为空对象
+
+        // 则params为callback
+        if (typeof params === 'function') {
+            callback = params
+            params = {}
+        }
+
         if (callback === undefined) {
             return new Promise((resolve, reject) => {
                 this.request(params, resolve, reject)
@@ -99,9 +106,19 @@ class APIService {
             }
         }
 
+        // 带header的完整响应mock
         if (this.CUSTOM_CONFIG.mockLocal) {
             const sendData = this.axiosConfig(params)
             const mockData = this.CUSTOM_CONFIG.mockLocal(sendData)
+            // eslint-disable-next-line no-console
+            console.info({ sendData, mockData })
+            return onResponse(mockData)
+        }
+
+        // 仅支持成功返回的数据
+        if (this.CUSTOM_CONFIG.resm) {
+            const sendData = this.axiosConfig(params)
+            const mockData = this.CUSTOM_CONFIG.resm(sendData.params || sendData.data)
             // eslint-disable-next-line no-console
             console.info({ sendData, mockData })
             return onResponse(mockData)

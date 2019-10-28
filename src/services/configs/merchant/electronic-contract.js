@@ -83,3 +83,16 @@ export const getElectronicContractList = [ 'merchant/electronic-contracts', { //
         }
     },
 } ]
+
+
+export const getElectronicContractDetail = [ 'merchant/electronic-contracts/:code', { // 获取合同详情
+    resa: {
+
+    },
+    resm ({ code }) {
+        console.info(code)
+        return {
+            xxx: '6666',
+        }
+    },
+} ]

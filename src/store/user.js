@@ -14,7 +14,7 @@ export default {
             merchant: {
                 token: '', // 商家token
                 name: '未选择', // 商家名称
-                code: null, // 商家编码
+                code: '', // 商家编码
                 authoritys: {}, // 商家权限
             },
         },
@@ -34,19 +34,21 @@ export default {
             LOGIN (state, data) {
                 state.name = data.name
                 state.avatar = data.avatar
-                state.token = data.token
-                cookie.set(userToken, data.token)
+                this.commit('SET_TOKEN', data.token)
             },
             LOGOUT (state) {
                 state.token = ''
-                state.merchant.code = null
-                state.merchant.token = ''
+                state.merchant.code = ''
+                state.merchant.name = '未选择'
                 state.merchant.authoritys = {}
-                cookie.set(userToken, '')
+                this.commit('SET_TOKEN', '')
             },
-            SET_MERCHANT (state, { code, token, authoritys, total }) {
+            SET_TOKEN (state, token) {
+                cookie.set(userToken, state.token = token)
+            },
+            SET_MERCHANT (state, { code, name, authoritys, total }) {
                 state.merchant.code = code
-                state.merchant.token = token
+                state.merchant.name = name
                 state.merchant.authoritys = (() => {
                     authoritys = authoritys.split(',').reduce((results, id) => (results[id] = true, results), {})
 
@@ -57,9 +59,12 @@ export default {
                     return authoritys
                 })()
             },
+            SET_SG_MERCHANT_CODE (state, token) {
+                state.merchant.token = token
+            },
         },
     },
     paths: [
-        'name', 'avatar', 'merchant.code', 'merchant.token', 'merchant.authoritys',
+        'name', 'avatar', 'merchant',
     ],
 }
