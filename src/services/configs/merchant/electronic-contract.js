@@ -87,12 +87,77 @@ export const getElectronicContractList = [ 'merchant/electronic-contracts', { //
 
 export const getElectronicContractDetail = [ 'merchant/electronic-contracts/:code', { // 获取合同详情
     resa: {
+        code: true, // 合同编号
+        status: { $key: 'statusLabel', $enum: [ '待生效', '已生效', '已失效' ] }, // 合同状态
+        signStatus: [ // 签约状态
+            { $key: 'signStatusLabel', $enum: [ '待平台签约', '待商家签约', '待双方签约', '签约成功', '签约失效' ] },
+            { $key: 'signEnabled', value: (value) => value === 1 || value === 2 },
+        ],
+        signDeadline: true, // 签约截止时间
 
+        name: true, // 合同名称
+        merchantCode: true, // 商家编号
+        merchantName: true, // 商家名称
+        templateCode: true, // 合同模板编号
+        businessType: { $enum: [ '采购合同', '结算合同' ] }, // 业务类型
+        invalidType: { $enum: [ '到期失效', '运维失效', '未签署失效', '作废失效' ] }, // 失效类型
+        signApplyTime: true, // 签约发起时间
+        applyPeople: true, // 签约发起人
+        effectBeginTime: true, // 合同生效开始时间
+        effectEndTime: true, // 合同生效截止时间
+        merchantSignTime: true, // 商家签约时间
+        platformSignTime: true, // 平台签约时间
+
+        loseContractCode: true, // 失效合同编码
     },
-    resm ({ code }) {
-        console.info(code)
+    datam ({ code }) {
+        const dateText = '2019-12-12'
         return {
-            xxx: '6666',
+            code,
+            status: 0,
+            statusLabel: '待生效',
+            signStatusLabel: '待商家签约',
+            signEnabled: true,
+            signDeadline: dateText,
+            loseContractCode: `${code}-LOSE`,
+
+            name: '测试合同',
+            merchantCode: '商家编码',
+            merchantName: '商家名称',
+            templateCode: '合同模板编号',
+            businessType: '采购合同',
+            invalidType: '到期失效', // 失效类型
+            signApplyTime: dateText, // 签约发起时间
+            applyPeople: '签约发起人', // 签约发起人
+            effectiveBeginTime: dateText, // 合同生效开始时间
+            effectiveEndTime: dateText, // 合同生效截止时间
+            merchantSignTime: dateText, // 商家签约时间
+            platformSignTime: dateText, // 平台签约时间
+
         }
     },
+} ]
+
+
+export const getElectronicContractSignInfo = [ 'merchant/electronic-contracts/:code/sign-fields', { // 获取签约信息
+    error: false,
+    mockLocal () {
+        return {
+            data: {
+                code: 0, // code == 70205 认证失败
+                data: null,
+                message: '错误拉',
+            },
+        }
+    },
+} ]
+
+
+export const submitSignElectronicContract = [ 'metchant/electronic-contracts/:code/sign-status', { // 提交签约
+    datam () {
+        return {
+
+        }
+    },
+    delay: 2000,
 } ]

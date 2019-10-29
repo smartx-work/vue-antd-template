@@ -4,40 +4,67 @@
       <a-row>
         <a-col :span="12">
           <div class="info-p">
-            商家合同编号：{{ detail.contractId }}
+            合同编号：{{ detail.code }}
           </div>
         </a-col>
         <a-col :span="12">
           <div class="info-p">
-            合同状态：{{ detail.contractStatusText }}
+            合同状态：{{ detail.statusLabel }}
           </div>
         </a-col>
       </a-row>
       <a-row>
         <a-col :span="12">
           <div class="info-p">
-            签约状态：{{ detail.signStatusText }}
+            签约状态：{{ detail.signStatusLabel }}
           </div>
         </a-col>
         <a-col :span="12">
           <div
             class="info-p"
           >
-            签约截止日期：{{ detail.platformSignDeadline >= detail.merchantSignDeadline ? detail.platformSignEndTime : detail.merchantSignEndTime }}
+            签约截止日期：{{ detail.signDeadline }}
           </div>
         </a-col>
       </a-row>
     </wgt-card>
 
-    <wgt-card v-if="detail.signEnabled">
+    <wgt-card class="btns-box">
       <a-button
-        :disabled="!$auth.has('merchant.electronic-contract.detail.sign.auth')"
+        v-if="detail.signEnabled"
         type="primary"
+        :disabled="!$auth.has('#sign')"
         @click="openSignDialog"
       >
         签约
       </a-button>
+
+      <a-button
+        type="primary"
+        :disabled="!$auth.has('#download')"
+        @click="downloadFile(detail.code)"
+      >
+        下载合同原文
+      </a-button>
+
+      <template v-if="detail.loseContractCode">
+        <a-button
+          type="primary"
+          :disabled="!$auth.has('#download')"
+          @click="downloadFile(detail.loseContractCode)"
+        >
+          下载失效合同
+        </a-button>
+
+        <a-button
+          type="primary"
+          @click="$openWindow({ path: '/merchant/electronic-contract/detail', query: { code: detail.loseContractCode } })"
+        >
+          查看失效合同详情
+        </a-button>
+      </template>
     </wgt-card>
+
 
     <wgt-card>
       <a-row>
@@ -46,16 +73,16 @@
             基础信息
           </h3>
           <div class="info-p">
-            合同名称：{{ detail.contractName }}
+            合同名称：{{ detail.name }}
           </div>
           <div class="info-p">
-            商家编号：{{ detail.merchantId }}
+            商家编号：{{ detail.merchantCode }}
           </div>
           <div class="info-p">
             商家名称：{{ detail.merchantName }}
           </div>
           <div class="info-p">
-            合同模板编号：{{ detail.templateId }}
+            合同模板编号：{{ detail.templateCode }}
           </div>
           <div class="info-p">
             业务类型：{{ detail.businessType }}
@@ -69,13 +96,10 @@
             发起邀请时间：{{ detail.signApplyTime }}
           </div>
           <div class="info-p">
-            邀请人：{{ detail.signApplyName }}
+            邀请人：{{ detail.applyPeople }}
           </div>
           <div class="info-p">
-            签约截止时间：{{ detail.deadlineDays }}
-          </div>
-          <div class="info-p">
-            合同有效期：{{ detail.remainEffectiveDays }}
+            合同有效期：{{ detail.effectiveEndTime }}
           </div>
 
           <div class="info-p">
@@ -85,97 +109,47 @@
             【商家】签约时间：{{ detail.merchantSignTime }}
           </div>
           <div class="info-p">
-            合同生效时间：{{ detail.effectiveTime }}
-          </div>
-        </a-col>
-      </a-row>
-      <a-row>
-        <a-col :span="24">
-          <h3 class="info-title">
-            合同原文
-          </h3>
-          <div class="info-p">
-            <span class="fileName">{{ detail.contractName }}</span>
-            <a-button
-              :disabled="!$auth.has('merchant.electronic-contract.detail.download.auth')"
-              type="primary"
-              @click="downloadFile(detail.contractId)"
-            >
-              下载
-            </a-button>
-          </div>
-        </a-col>
-      </a-row>
-
-      <a-row v-if="detail.masterContractName">
-        <a-col :span="24">
-          <h3 class="info-title">
-            失效合同原文
-          </h3>
-          <div class="info-p">
-            <span class="fileName">{{ detail.masterContractName }}</span>
-            <a-button
-              :disabled="!$auth.has('merchant.electronic-contract.detail.download.auth')"
-              type="primary"
-              @click="downloadFile(detail.masterContractNo)"
-            >
-              下载
-            </a-button>
-            <a-button
-              :disabled="!$auth.has('merchant.electronic-contract.detail')"
-              type="primary"
-              @click="viewDetail(detail.masterContractNo)"
-            >
-              查看详情
-            </a-button>
+            合同生效时间：{{ detail.effectiveBeginTime }}
           </div>
         </a-col>
       </a-row>
     </wgt-card>
 
-    <wgt-dialog :option="zqDialog" />
+    <wgt-dialog :option="signDialog" />
   </div>
 </template>
 <script>
 import pdfViewer from './pdf-viewer'
 export default {
+    // eslint-disable-next-line vue/no-unused-components
     components: { pdfViewer },
     data () {
         return {
-            xx: 1,
-            contractId: this.$route.query.contractId, // 合同编号
+            code: this.$route.query.code, // 合同编号
             detail: {}, // 合同详情
 
             // 众签签约弹窗
-            zqDialog: {
-                className: 'zq-sign-dialog',
+            signDialog: {
+                className: 'view-electronic-contract-detail-signDialog-dialog',
                 title: '签署合同',
                 props: { width: '880px', maskClosable: false },
-                data: { listenFinishTimer: null, formData: null, pdfViewer: { }, signLoading: false },
+                data: { pdfViewer: { }, signLoading: false },
                 onOpen: ({ data }, form) => {
-                    data.form = form
-                    /*
-                    data.listenFinishTimer = setInterval(() => {
-                        this.zqDialog.checkSignIsFinish()
-                    }, 2000) */
+
                 },
                 onClose: ({ data }) => {
-                    clearInterval(data.listenFinishTimer)
-                    this.getDetailInfo()
-                },
-                submit: () => {
 
                 },
                 submitSign: (data) => {
                     data.signLoading = true
-                    this.$api
-                        .electronicContractSubmitSign({
-                            contractNo: this.contractId,
+                    this.$services
+                        .submitSignElectronicContract({
+                            contractNo: this.code,
                         })
                         .then(res => {
                             data.signLoading = false
                             this.$message.success('签署成功')
-                            this.zqDialog.close()
+                            this.signDialog.close()
                             this.getDetailInfo()
                         })
                         .catch(() => {
@@ -187,7 +161,7 @@ export default {
                     this.$nextTick(() => {
                         if (data.pdfViewer.draw) {
                             data.pdfViewer.draw({
-                                url: `${window.origin}/merchant-gw/merchant/download?contractNo=${this.contractId}`,
+                                url: `${window.origin}/merchant-gw/merchant/download?code=${this.code}`,
                                 httpHeaders: {
                                     token: this.$store.getters.token,
                                 },
@@ -198,37 +172,18 @@ export default {
                     return (
                         <div>
                             <div style="margin-bottom:20px; text-align:right">
-                                <a-button loading={data.signLoading} type="primary" onClick={() => this.zqDialog.submitSign(data)}>签署合同</a-button>
+                                <a-button loading={data.signLoading} type="primary" onClick={() => this.signDialog.submitSign(data)}>签署合同</a-button>
                             </div>
                             <pdf-viewer option={data.pdfViewer} />
                         </div>
                     )
-                },
-
-                // 检查是否已经签约完成
-                checkSignIsFinish: () => {
-                    const params = {
-                        contractNo: this.contractId,
-                    }
-                    this.$api.checkSignIsFinish(params, (res) => {
-                        if (res.err) {
-                            this.$message.error(res.err)
-                        } else {
-                            if (res === 'FAILED') {
-                                this.$message.error(res.msg)
-                            } else if (res === 'WAIT') {
-                                return
-                            }
-                        }
-                        this.zqDialog.close()
-                    })
                 },
             },
         }
     },
     watch: {
         $route () {
-            this.contractId = this.$route.query.contractId
+            this.code = this.$route.query.code
             this.getDetailInfo()
         },
     },
@@ -240,62 +195,46 @@ export default {
 
         // 获取合同详情
         getDetailInfo () {
-            this.$services.getElectronicContractDetail({ contractId: this.contractId }, (res) => {
+            this.$services.getElectronicContractDetail({ code: this.code }, (res) => {
                 this.detail = res
             })
         },
 
         // 打开签约弹窗，前置校验包含实名认证和数字证书
         openSignDialog () {
-            this.$api
-                .getElectronicContractSignFields({ contractId: this.contractId })
-                .then((data) => {
-                    this.zqDialog.open(data)
-                })
-                .catch(err => {
-                    if (err.code === 70205 || err.code === 70206) {
-                        // 需要企业实名认证
-                        this.$router.push({
-                            path: '/merchant/certification',
-                            query: {
-                                referer: '/merchant/electronic-contract/detail',
-                                contractId: this.contractId,
-                            },
-                        })
-                    } else {
-                        this.$message.error(err.err.message)
-                    }
-                })
+            this.$services.getElectronicContractSignInfo({ code: this.code }).then((data) => {
+                this.signDialog.open(data)
+            }).catch(err => {
+                if (err.code === 70205 || err.code === 70206) {
+                    // 需要企业实名认证
+                    this.$router.push({
+                        path: '/merchant/certification',
+                        query: {
+                            referer: '/merchant/electronic-contract/detail',
+                            code: this.code,
+                        },
+                    })
+                } else {
+                    this.$message.error(err.message)
+                }
+            })
         },
 
-        downloadFile (contractId) {
+        downloadFile (code) {
             this.$services.downloadFile({
                 source: '/merchant/download',
-                name: `${contractId}.pdf`,
+                name: `${code}.pdf`,
                 type: 'application/pdf',
-                code: contractId,
+                code,
             })
-
-            /*
-            axios.get('/merchant/download', {
-                headers: { token: this.$store.getters.token },
-                responseType: 'arraybuffer',
-                params: { contractNo: contractId },
-            }).then(res => {
-                const blob = new Blob([ res.data ], { type: 'application/pdf' })
-                saveAs(blob, `${contractId}.pdf`)
-                this.$message.success('下载成功')
-            }) */
         },
-        viewDetail (contractId) {
+
+        viewDetail (code) {
             this.$router.push({
                 path: '/merchant/electronic-contract/detail',
-                query: {
-                    contractId,
-                },
+                query: { code },
             })
         },
-
     },
 }
 </script>
@@ -323,18 +262,24 @@ export default {
   .fileName {
     margin: 0 40px 0 16px;
   }
-}
 
-.zq-sign-dialog {
-  iframe {
-    border: none;
-    height: 100%;
-    min-height: 600px;
-    width: 100%;
+  .btns-box {
+    .ant-btn {
+      margin-right: 20px;
+    }
   }
 
-  .ant-modal-footer {
-    display: none;
+  &-signDialog-dialog {
+    iframe {
+      border: none;
+      height: 100%;
+      min-height: 600px;
+      width: 100%;
+    }
+
+    .ant-modal-footer {
+      display: none;
+    }
   }
 }
 </style>

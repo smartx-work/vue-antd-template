@@ -54,7 +54,7 @@ export default services({
         response: {
             getter ({ res, config }) {
                 const { resa, responseType } = config
-                if (responseType === 'arrayBuffer') { // 二进制，则不处理
+                if (responseType === 'arraybuffer') { // 二进制，则不处理
                     resa(res, config)
                     return {}
                 }

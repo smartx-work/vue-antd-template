@@ -40,11 +40,11 @@ export default {
                     [ '合同有效期', 'validityTime' ],
                     [ '管理', 'code', {
                         key: 'operate',
-                        customRender: (contractId) => {
+                        customRender: (code) => {
                             if (!this.$auth.has('/merchant/electronic-contract/detail')) {
                                 return '-'
                             }
-                            return (<a onClick={ () => { this.$openWindow({ path: '/merchant/electronic-contract/detail', query: { contractId } }) } }>查看详情</a>)
+                            return (<a onClick={ () => { this.$openWindow({ path: '/merchant/electronic-contract/detail', query: { code } }) } }>查看详情</a>)
                         },
                     } ],
                 ],

@@ -22,13 +22,13 @@ export default [
         component: BasicLayout,
         meta: { icon: 'solution', label: '商家管理', retain: true },
         children: [
-            /* {
-                disabled: true,
+            {
                 menu: true,
+                authIgnore: true,
                 path: 'information',
-                component: () => import('@/views/merchant/information/editor'),
+                component: () => import('@/views/merchant/information'),
                 meta: { label: '信息管理' },
-            }, */
+            },
             {
                 menu: true,
                 authIgnore: true,

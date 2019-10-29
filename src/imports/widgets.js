@@ -2,7 +2,9 @@ import Vue from 'vue'
 import Card from '@/components/widgets/card'
 import DataFilter from '@/components/widgets/data-filter'
 import DataView from '@/components/widgets/data-view'
+import Form from '@/components/widgets/form'
 import Dialog from '@/components/widgets/dialog'
+import AreaPicker from '@/components/widgets/area-picker'
 /*
 
 import Table from '@/components/widgets/table'
@@ -11,12 +13,12 @@ import DataFilter from '@/components/widgets/data-filter'
 import DataView from '@/components/widgets/data-view'
 import Upload from '@/components/widgets/upload'
 import DataTabs from '@/components/widgets/data-tabs'
-import Form from '@/components/widgets/form'
+
 import AreaPicker from '@/components/widgets/area-picker'
 import Dialog from '@/components/widgets/dialog' */
 
 const components = {
-    Card, DataFilter, DataView, Dialog,
+    Card, DataFilter, DataView, Form, Dialog, AreaPicker,
     // Card, Table, OperateBar, DataFilter, DataView, Upload, DataTabs, Form, AreaPicker, Dialog,
 }
 

@@ -24,6 +24,7 @@ class APIService {
             mock: config.mock,
             error: config.error, // undefined:执行onError句柄，不抛出异常，true:执行onError句柄，抛出异常，false：不执行onError句柄，抛出异常
             mockLocal: config.mockLocal,
+            datam: config.datam,
             delay: config.delay,
         }
 
@@ -59,9 +60,8 @@ class APIService {
                 headers.getter({ headers: responseObject.headers || {} })
             }
 
-
             if (response && response.getter) {
-                ({ res, error } = response.getter({ res, config: { ...this.CUSTOM_CONFIG, ...this.AXIOS_CONFIG, params } }))
+                ;({ res, error } = response.getter({ res, config: { ...this.CUSTOM_CONFIG, ...this.AXIOS_CONFIG, params } }))
                 if (typeof res !== 'object') {
                     res = {}
                 }
@@ -99,12 +99,11 @@ class APIService {
 
         // 延迟处理
         const { delay } = this.CUSTOM_CONFIG
-        if (delay > 0) {
-            const originOnRespons = onResponse
-            onResponse = function () {
-                setTimeout(() => originOnRespons(...arguments), delay)
-            }
+        const originOnRespons = onResponse
+        onResponse = function () {
+            setTimeout(() => originOnRespons(...arguments), delay || 0)
         }
+
 
         // 带header的完整响应mock
         if (this.CUSTOM_CONFIG.mockLocal) {
@@ -116,12 +115,12 @@ class APIService {
         }
 
         // 仅支持成功返回的数据
-        if (this.CUSTOM_CONFIG.resm) {
+        if (this.CUSTOM_CONFIG.datam) {
             const sendData = this.axiosConfig(params)
-            const mockData = this.CUSTOM_CONFIG.resm(sendData.params || sendData.data)
+            const mockData = this.CUSTOM_CONFIG.datam(sendData.params || sendData.data)
             // eslint-disable-next-line no-console
-            console.info({ sendData, mockData })
-            return onResponse(mockData)
+            console.info('=== datam ===\n', { sendData, mockData })
+            return onResponse({ headers: {}, data: { code: 0, data: mockData } })
         }
 
         axios(this.axiosConfig(params)).then(onResponse).catch((err) => {
@@ -134,7 +133,8 @@ class APIService {
 
     axiosConfig (params) {
         const { url, headers } = this.AXIOS_CONFIG
-        const { mockLocal } = this.CUSTOM_CONFIG
+        const { mockLocal, datam } = this.CUSTOM_CONFIG
+        const isMock = mockLocal || datam
         let reqUrl = url // 请求的路径
         let reqParams = params // 请求的参数
         let reqHeaders = {} // 请求的头
@@ -164,7 +164,7 @@ class APIService {
             })
 
             for (const name in params) {
-                if (!mockLocal && name in pathParams) {
+                if (!isMock && name in pathParams) {
                     continue
                 }
                 reqParams[name] = params[name]
@@ -172,7 +172,7 @@ class APIService {
         }
 
         const config = { url: reqUrl, headers: reqHeaders }
-        if (mockLocal) { // 模拟数据，字段名则使用params
+        if (isMock) { // 模拟数据，字段名则使用params
             config.params = reqParams
         } else { // axios字段名则使用data
             config.data = reqParams

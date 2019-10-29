@@ -53,10 +53,31 @@ export default function (option) {
     Vue.use(Router)
 
     Vue.prototype.$auth = {
-        has: (id) => {
-            return authoritys && id in authoritys
+        has (id = '') {
+            if (!authoritys) {
+                return false
+            }
+
+            // 假如参数不带路径，则使用当前环境中的路由路径作为前缀
+            if (!/\//.test(id)) {
+                id = router.app.$route.path + id
+            }
+
+            return id in authoritys
         },
     }
+
+
+    /*
+    function () {
+        const $vm = this
+        return {
+            has: (id) => {
+                console.info(this.$router)
+                return authoritys && id in authoritys
+            },
+        }
+    } */
 
     return { router, menulist: () => createMenulist(allRoutes, authoritys) }
 }

@@ -8,10 +8,6 @@ import { router } from '@/router/'
 
 Vue.config.productionTip = false
 
-
-console.info(router)
-
-
 new Vue({
     store,
     router,

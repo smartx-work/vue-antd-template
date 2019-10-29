@@ -51,12 +51,12 @@ export default {
                     [ '签约截止时间', 'signEndTime' ],
                     [ '管理', 'code', {
                         key: 'operate',
-                        customRender: (contractId) => {
+                        customRender: (code) => {
                             if (!this.$auth.has('/merchant/electronic-contract/detail')) {
                                 return (<span>-</span>)
                             }
                             return (<a onClick={ () => {
-                                this.$openWindow({ path: '/merchant/electronic-contract/detail', query: { contractId } })
+                                this.$openWindow({ path: '/merchant/electronic-contract/detail', query: { code } })
                             } }>查看详情</a>)
                         },
                     } ],
