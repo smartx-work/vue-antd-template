@@ -45,6 +45,7 @@ export const selectMerchant = [ 'merchant/tokens/:code', { // 选择商家，会
                 code: 0,
                 data: {
                     authoritys: [
+                        '/merchant-selector',
                         '/merchant/information',
                         '/merchant/information#modify',
                         '/merchant/information#bindBankCard',

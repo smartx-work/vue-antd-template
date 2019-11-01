@@ -4,11 +4,11 @@ export default [
     {
         path: '',
         component: BasicLayout,
-        redirect: '/merchant/selector',
+        redirect: '/merchant-selector',
         children: [
             {
                 menu: true,
-                path: 'merchant/selector',
+                path: 'merchant-selector',
                 authIgnore: true,
                 meta: { label: '商家列表', icon: 'home' },
                 component: () => import(/* webpackChunkName: "index" */ '@/views/merchant/selector'),
